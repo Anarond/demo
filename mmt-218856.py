@@ -5,10 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time
 import json
 
-with open("config.json", "r") as f:
-    config = json.load(f)
+def scenario():
+    with open("config.json", "r") as f:
+        config = json.load(f)
 
-def test_scenario():
     username = config["username"]
     password = config["password"]
     url = config["url"]
@@ -16,7 +16,7 @@ def test_scenario():
     driver = webdriver.Chrome()
     driver.get(url)
 
-        login_field = WebDriverWait(driver, 10).until(
+    login_field = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, '//*[@id="login"]'))
     )
     login_field.send_keys(username)
@@ -44,17 +44,14 @@ def test_scenario():
     test_bp1_button = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//*[contains(text(), 'test bp1')]")))
     test_bp1_button.click()
-    time.sleep(4)
-    iframe = driver.find_element(By.NAME, "reactBrowserFrame")
-    driver.switch_to.frame(iframe)
+
+    driver.switch_to.window(driver.window_handles[-1])
+
+    driver.switch_to.frame(driver.find_element(By.XPATH, "//iframe[contains(@src, '/logic/program/1/card')]"))
 
     add_scenario_button = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//*[contains(text(), 'Добавление сценария')]")))
     add_scenario_button.click()
 
-    #driver.switch_to.default_content()
-
-    time.sleep(111)
-    #driver.find_element(By.XPATH, '//*[@id="login"]').send_keys(username)
-    #driver.find_element(By.XPATH, '//*[@id="password"]').send_keys(password)
-    #driver.find_element(By.XPATH, '//*[@id="mp-btn_default-login-enter"]').click()
+if __name__ == "__main__":
+    scenario()
